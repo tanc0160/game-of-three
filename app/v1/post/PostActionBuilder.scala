@@ -63,7 +63,6 @@ class PostActionBuilder @Inject()(messagesApi: MessagesApi, playBodyParsers: Pla
                               block: PostRequestBlock[A]): Future[Result] = {
     // Convert to marker context and use request in block
     implicit val markerContext: MarkerContext = requestHeaderToMarkerContext(request)
-    logger.trace(s"invokeBlock: ")
 
     val future = block(new PostRequest(request, messagesApi))
 
@@ -85,7 +84,6 @@ class PostActionBuilder @Inject()(messagesApi: MessagesApi, playBodyParsers: Pla
  * controller only has to have one thing injected.
  */
 case class PostControllerComponents @Inject()(postActionBuilder: PostActionBuilder,
-                                               postResourceHandler: PostResourceHandler,
                                                actionBuilder: DefaultActionBuilder,
                                                parsers: PlayBodyParsers,
                                                messagesApi: MessagesApi,
@@ -101,6 +99,4 @@ class PostBaseController @Inject()(pcc: PostControllerComponents) extends BaseCo
   override protected def controllerComponents: ControllerComponents = pcc
 
   def PostAction: PostActionBuilder = pcc.postActionBuilder
-
-  def postResourceHandler: PostResourceHandler = pcc.postResourceHandler
 }
